@@ -26,7 +26,6 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-
                 <TextView
                     android:id="@+id/salah"
                     android:layout_width="wrap_content"
@@ -149,6 +148,47 @@
 
             <TextView
                 android:id="@+id/jawaban2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:text="lalala"/>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_height="wrap_content">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/kartujawaban3"
+            android:layout_width="150dp"
+            android:layout_height="150dp">
+
+            <TextView
+                android:id="@+id/jawaban3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:text="lalala"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/kartujawaban4"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="150dp"
+            android:layout_height="150dp">
+
+            <TextView
+                android:id="@+id/jawaban4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

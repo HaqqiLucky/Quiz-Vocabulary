@@ -2,7 +2,6 @@ package com.liam.quizvocabulary
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +16,19 @@ class MainActivity : AppCompatActivity() {
     private var right = 0
     private var wrong = 0
     private var soalke = 1
+    private var saveHereToCheckLater : String = ""
+    private val questionanswerList : Map <String, String> = mapOf(
+        "Blue" to "Biru",
+        "Purple" to "Ungu",
+        "Green" to "Hijau",
+        "Orange" to "Jingga",
+        "Yellow" to "Kuning",
+        "Pink" to "Merah muda",
+        "Black" to "Hitam",
+        "White" to "Putih"
+    )
+    private var randomQuestionwithAnswer = questionanswerList.entries.random()
+    private var valueOfRandomQuestionwithAnswer = randomQuestionwithAnswer.value
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,86 +44,79 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        viewLalala()
+        generateQuestion()
     }
 
+//    questionansw
+//    questionanswerList = // key to value
+
+//    )
 
 
-    private fun viewLalala(){
-        
-        fun gantiSoal(){
 
-            soalke++
-            binding.total.text = soalke.toString()
-            viewLalala()
+    private fun changeQuestion(){
+        soalke++
+        binding.total.text = soalke.toString()
+        generateQuestion()
+    }
+
+    private fun check(){
+        if (saveHereToCheckLater == valueOfRandomQuestionwithAnswer){
+            Toast.makeText(this, "Jawaban kau bener", Toast.LENGTH_SHORT).show()
+            Log.e("Main activity", "sampe sini")
+            right++
+            Log.e("MainAct","ini variabel right = {$right}")
+            binding.bener.text = right.toString()
+            changeQuestion()
+        } else if (saveHereToCheckLater == null){
+            Toast.makeText(this, "Silahkan jawab soal ini", Toast.LENGTH_SHORT).show()
+        } else{
+            Toast.makeText(this, "Salah jir", Toast.LENGTH_SHORT).show()
+            wrong++
+            Log.e("MainAct","ini variabel wrong = {$wrong}")
+            binding.salah.text = wrong.toString()
+            changeQuestion()
         }
 
-        val questionanswer = mapOf( // key to value
-            "Blue" to "Biru",
-            "Purple" to "Ungu",
-            "Green" to "Hijau",
-            "Orange" to "Jingga",
-            "Yellow" to "Kuning",
-            "Pink" to "Merah muda",
-            "Black" to "Hitam",
-            "White" to "Putih"
-        )
-        var s : String = ""
-        val jawabanrandom = questionanswer.values.random() // ini nanti buat kolom yang ga kepake
-        var p = questionanswer.entries.random()
-        var q = p.value
-        var r = p.key
-        val t = jawabanrandom
+    }
 
+    private fun generateQuestion(){
 
+        val falseAnswer = questionanswerList.values.shuffled().take(3).toMutableList()
 
-        fun cek(){
-
-
-            if (s == q){
-                Toast.makeText(this, "Jawaban kau bener", Toast.LENGTH_SHORT).show()
-                Log.e("Main activity", "sampe sini")
-
-                right++
-                Log.e("MainAct","ini variabel right = {$right}")
-                binding.bener.text = right.toString()
-                gantiSoal()
-
-            } else if (s == null){
-                Toast.makeText(this, "Silahkan jawab soal ini", Toast.LENGTH_SHORT).show()
-            } else{
-                Toast.makeText(this, "Salah jir", Toast.LENGTH_SHORT).show()
-                wrong++
-                Log.e("MainAct","ini variabel wrong = {$wrong}")
-                binding.salah.text = wrong.toString()
-                gantiSoal()
-            }
-        }
-
-
+        var keyOfRandomQuestionwithAnswer = randomQuestionwithAnswer.key
 
         var kocok = mutableListOf<String>(
-            q , t
+            valueOfRandomQuestionwithAnswer , falseAnswer[1], falseAnswer[0], falseAnswer[2]
         )
         kocok.shuffle()
 
-        var aa = kocok[0]
-        var bb = kocok[1]
-
-        binding.soal.text = r // harus di .text dlu biar bisa di bawa ke view
-        binding.jawaban1.text = aa
-        binding.jawaban2.text = bb
+        binding.soal.text = keyOfRandomQuestionwithAnswer // harus di .text dlu biar bisa di bawa ke view
+        binding.jawaban1.text = kocok[0]
+        binding.jawaban2.text = kocok[1]
+        binding.jawaban3.text = kocok[2]
+        binding.jawaban4.text = kocok[3]
 
         binding.kartujawaban1.setOnClickListener {
-            s = aa
-            cek()
+            saveHereToCheckLater = kocok[0]
+            check()
             Log.e("Main activity", "kartu jawaban1")
         }
         binding.kartujawaban2.setOnClickListener {
-            s = bb
-            cek()
+            saveHereToCheckLater = kocok[1]
+            check()
             Log.e("Main activity", "kartu jawaban2")
         }
-
+        binding.kartujawaban3.setOnClickListener{
+            saveHereToCheckLater = kocok[2]
+            check()
+            Log.e("Main activity","Kartu jawaban3")
+        }
+        binding.kartujawaban4.setOnClickListener {
+            saveHereToCheckLater = kocok[3]
+            check()
+            Log.e("Main activity", "kartu jawaban4")
+        }
     }
+
 }
