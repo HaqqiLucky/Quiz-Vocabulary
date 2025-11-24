@@ -1,5 +1,6 @@
 package com.liam.quizvocabulary
 
+import android.R
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     private var wrong = 0
     private var soalke = 1
     private var saveHereToCheckLater : String = ""
-    private val questionanswerList : Map <String, String> = mapOf(
+    private val questionanswerList : MutableMap<String, String> = mutableMapOf(
         "Blue" to "Biru",
         "Purple" to "Ungu",
         "Green" to "Hijau",
@@ -27,41 +28,104 @@ class MainActivity : AppCompatActivity() {
         "Black" to "Hitam",
         "White" to "Putih"
     )
-    private var randomQuestionwithAnswer = questionanswerList.entries.random()
-    private var valueOfRandomQuestionwithAnswer = randomQuestionwithAnswer.value
+
+    private var theAnswer : String = ""
+//    private val listWithoutCorrectAnswerInIt  = listOf (
+//        questionanswerList.entries.removeIf { it.key == theAnswer }
+//        return questionanswerList
+//    )
+
+
+//    fun listWithoutCorrectAnswerInIt(): MutableMap<String, String> {
+//        questionanswerList.entries.removeIf { it.value == theAnswer }
+//        return questionanswerList                                         ini langsung ke map efeknya langsung di hapus di mapnya langsung, solusinya buat copy dlu baru pake copy itu
+//    }
+
+    fun listWithoutCorrectAnswerInIt(): MutableMap<String, String> {
+        val copyOfQuestionanswerlist = questionanswerList.toMutableMap()
+        copyOfQuestionanswerlist.entries.removeIf { it.value == theAnswer }
+        return copyOfQuestionanswerlist
+    }
+
+    // tipe data harus sama kalo mau remove, ga tau gpt tadi bilang bs, tp ini bisaa hojfarwifpbfgjihhfe
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
+        setContentView(binding.root)
         enableEdgeToEdge()
-        setContentView(view)
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        Log.e("Main act", "this is not included with corect aswer ${listWithoutCorrectAnswerInIt()} with $theAnswer as correct answer")
 
         generateQuestion()
+
     }
-
-//    questionansw
-//    questionanswerList = // key to value
-
-//    )
 
 
 
     private fun changeQuestion(){
         soalke++
         binding.total.text = soalke.toString()
+//        randomQuestionwithAnswer()
         generateQuestion()
     }
 
+
+    private fun generateQuestion(){
+        theAnswer = questionanswerList.values.random() // di atas deklasrasi aja, ga usah di isi
+        println("theAnswer = [$theAnswer]")
+//        println("values     = ${questionanswerList.values.map { "[$it]" }}")
+
+        var randomAnswerWithoutTrueAnswer = listWithoutCorrectAnswerInIt().values.take(3).shuffled().toMutableList() // harus mutable dulu, soanya kalo list biasa ga bisa di apa apain
+        randomAnswerWithoutTrueAnswer.add(theAnswer)
+        randomAnswerWithoutTrueAnswer.shuffle()
+
+        Log.e("Main activity", "kocok ambil per index $randomAnswerWithoutTrueAnswer")
+
+//        var questionlala =
+//        Log.e("Main activity", "soal: $questionlala")
+
+
+        binding.soal.text = questionanswerList.entries.first { it.value == theAnswer }.key
+        binding.jawaban1.text = randomAnswerWithoutTrueAnswer[0]
+        binding.jawaban2.text =randomAnswerWithoutTrueAnswer[1]
+        binding.jawaban3.text = randomAnswerWithoutTrueAnswer[2]
+        binding.jawaban4.text =randomAnswerWithoutTrueAnswer[3]
+
+
+
+
+        binding.kartujawaban1.setOnClickListener {
+            saveHereToCheckLater = randomAnswerWithoutTrueAnswer[0]
+            check()
+            Log.e("Main activity", "kartu jawaban1")
+        }
+        binding.kartujawaban2.setOnClickListener {
+            saveHereToCheckLater = randomAnswerWithoutTrueAnswer[1]
+            check()
+            Log.e("Main activity", "kartu jawaban2")
+        }
+        binding.kartujawaban3.setOnClickListener{
+            saveHereToCheckLater = randomAnswerWithoutTrueAnswer[2]
+            check()
+            Log.e("Main activity","Kartu jawaban3")
+        }
+        binding.kartujawaban4.setOnClickListener {
+            saveHereToCheckLater = randomAnswerWithoutTrueAnswer[3]
+            check()
+            Log.e("Main activity", "kartu jawaban4")
+        }
+
+    }
     private fun check(){
-        if (saveHereToCheckLater == valueOfRandomQuestionwithAnswer){
+        if (saveHereToCheckLater == theAnswer){
             Toast.makeText(this, "Jawaban kau bener", Toast.LENGTH_SHORT).show()
             Log.e("Main activity", "sampe sini")
             right++
@@ -78,45 +142,6 @@ class MainActivity : AppCompatActivity() {
             changeQuestion()
         }
 
-    }
-
-    private fun generateQuestion(){
-
-        val falseAnswer = questionanswerList.values.shuffled().take(3).toMutableList()
-
-        var keyOfRandomQuestionwithAnswer = randomQuestionwithAnswer.key
-
-        var kocok = mutableListOf<String>(
-            valueOfRandomQuestionwithAnswer , falseAnswer[1], falseAnswer[0], falseAnswer[2]
-        )
-        kocok.shuffle()
-
-        binding.soal.text = keyOfRandomQuestionwithAnswer // harus di .text dlu biar bisa di bawa ke view
-        binding.jawaban1.text = kocok[0]
-        binding.jawaban2.text = kocok[1]
-        binding.jawaban3.text = kocok[2]
-        binding.jawaban4.text = kocok[3]
-
-        binding.kartujawaban1.setOnClickListener {
-            saveHereToCheckLater = kocok[0]
-            check()
-            Log.e("Main activity", "kartu jawaban1")
-        }
-        binding.kartujawaban2.setOnClickListener {
-            saveHereToCheckLater = kocok[1]
-            check()
-            Log.e("Main activity", "kartu jawaban2")
-        }
-        binding.kartujawaban3.setOnClickListener{
-            saveHereToCheckLater = kocok[2]
-            check()
-            Log.e("Main activity","Kartu jawaban3")
-        }
-        binding.kartujawaban4.setOnClickListener {
-            saveHereToCheckLater = kocok[3]
-            check()
-            Log.e("Main activity", "kartu jawaban4")
-        }
     }
 
 }
