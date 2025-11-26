@@ -21,10 +21,40 @@
 
         <!-- Wrong - RED -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/restart"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="110dp"
             app:cardElevation="8dp"
+            app:cardCornerRadius="22dp"
+            app:cardBackgroundColor="#FF8A80">
+
+            <LinearLayout
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:src="@drawable/restart_alt_24dp_ffffff_fill0_wght400_grad0_opsz24"/>
+
+                <TextView
+                    android:text="Restart"
+                    android:textSize="16sp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="110dp"
+            app:cardElevation="8dp"
+            android:layout_marginLeft="10dp"
             app:cardCornerRadius="22dp"
             app:cardBackgroundColor="#FF8A80">
 
@@ -89,7 +119,7 @@
         <!-- Total - BLUE -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_height="110dp"
             app:cardElevation="8dp"
@@ -240,6 +270,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
 
+
+    </LinearLayout>
 </LinearLayout>
