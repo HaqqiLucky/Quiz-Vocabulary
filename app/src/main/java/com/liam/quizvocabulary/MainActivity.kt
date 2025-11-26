@@ -9,15 +9,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.liam.quizvocabulary.databinding.ActivityMainBinding
+import kotlin.collections.get
 
 //Good code = kode yang mudah dibaca, mudah dipelihara, bersih, jelas, aman, dan efisien.
+// Create a QuizManager Class. This class will hold the question list, manage the score, pick the next question, and decide if the quiz is over
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var right = 0
     private var wrong = 0
     private var soalke = 1
-    private var saveHereToCheckLater : String = ""
+//    private var saveHereToCheckLater : String = ""
     private val questionanswerList : MutableMap<String, String> = mutableMapOf(
         "Blue" to "Biru",
         "Purple" to "Ungu",
@@ -28,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         "Black" to "Hitam",
         "White" to "Putih"
     )
-
     private var theAnswer : String = ""
 //    private val listWithoutCorrectAnswerInIt  = listOf (
 //        questionanswerList.entries.removeIf { it.key == theAnswer }
@@ -49,10 +50,26 @@ class MainActivity : AppCompatActivity() {
 
     // tipe data harus sama kalo mau remove, ga tau gpt tadi bilang bs, tp ini bisaa hojfarwifpbfgjihhfe
 
+    private fun generateQuestion(): MutableList<String> {
+        soalke++
+        binding.total.text = soalke.toString()
+        theAnswer = questionanswerList.values.random()
+        var randomAnswerWithoutTrueAnswer = listWithoutCorrectAnswerInIt().values.take(3).toMutableList() // harus mutable dulu, soanya kalo list biasa ga bisa di apa apain
+        randomAnswerWithoutTrueAnswer.add(theAnswer)
+        randomAnswerWithoutTrueAnswer.shuffled()
+//        val randomAnswerWithTrueAnswer = mutableListOf<String>(randomAnswerWithoutTrueAnswer
+        Log.e("Main act", "this is not included with corect aswer ${listWithoutCorrectAnswerInIt()} with $theAnswer as correct answer")
+        Log.e("Main activity", "kocok ambil per index $randomAnswerWithoutTrueAnswer")
+        return (randomAnswerWithoutTrueAnswer)
+//        binding.jawaban1.text = randomAnswerWithoutTrueAnswer[1]
+//        binding.jawaban2.text = randomAnswerWithoutTrueAnswer[0]
+//        binding.jawaban3.text = randomAnswerWithoutTrueAnswer[1]
+//        binding.jawaban4.text = randomAnswerWithoutTrueAnswer[1]
+
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -62,86 +79,74 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        Log.e("Main act", "this is not included with corect aswer ${listWithoutCorrectAnswerInIt()} with $theAnswer as correct answer")
+        updateUI()
+        var listOfAnswer : List<String> = generateQuestion().toList()
 
-        generateQuestion()
-
-    }
-
-
-
-    private fun changeQuestion(){
-        soalke++
-        binding.total.text = soalke.toString()
-//        randomQuestionwithAnswer()
-        generateQuestion()
-    }
-
-
-    private fun generateQuestion(){
-        theAnswer = questionanswerList.values.random() // di atas deklasrasi aja, ga usah di isi
-        println("theAnswer = [$theAnswer]")
-//        println("values     = ${questionanswerList.values.map { "[$it]" }}")
-
-        var randomAnswerWithoutTrueAnswer = listWithoutCorrectAnswerInIt().values.take(3).shuffled().toMutableList() // harus mutable dulu, soanya kalo list biasa ga bisa di apa apain
-        randomAnswerWithoutTrueAnswer.add(theAnswer)
-        randomAnswerWithoutTrueAnswer.shuffle()
-
-        Log.e("Main activity", "kocok ambil per index $randomAnswerWithoutTrueAnswer")
-
-//        var questionlala =
-//        Log.e("Main activity", "soal: $questionlala")
-
+//        val listOfAnswer = generateQuestion().toList()
+        Log.e("main activity", "ini adalah list answr yg udah naik ke on create $listOfAnswer")
 
         binding.soal.text = questionanswerList.entries.first { it.value == theAnswer }.key
-        binding.jawaban1.text = randomAnswerWithoutTrueAnswer[0]
-        binding.jawaban2.text =randomAnswerWithoutTrueAnswer[1]
-        binding.jawaban3.text = randomAnswerWithoutTrueAnswer[2]
-        binding.jawaban4.text =randomAnswerWithoutTrueAnswer[3]
-
-
-
-
-        binding.kartujawaban1.setOnClickListener {
-            saveHereToCheckLater = randomAnswerWithoutTrueAnswer[0]
-            check()
-            Log.e("Main activity", "kartu jawaban1")
+        // pake apply bisa langsung setText sama setonclick
+        binding.jawaban1.apply {
+            text = listOfAnswer[0]
+            setOnClickListener {
+                check(text.toString())
+                Log.e("Main activity", "kartu jawaban1")
+            }
         }
-        binding.kartujawaban2.setOnClickListener {
-            saveHereToCheckLater = randomAnswerWithoutTrueAnswer[1]
-            check()
-            Log.e("Main activity", "kartu jawaban2")
+        binding.jawaban2.apply {
+            text = listOfAnswer[1]
+            setOnClickListener {
+                check(text.toString())
+                Log.e("Main activity", "kartu jawaban2")
+            }
         }
-        binding.kartujawaban3.setOnClickListener{
-            saveHereToCheckLater = randomAnswerWithoutTrueAnswer[2]
-            check()
-            Log.e("Main activity","Kartu jawaban3")
+        binding.jawaban3.apply {
+            text = listOfAnswer[2]
+            setOnClickListener {
+                check(text.toString())
+                Log.e("Main activity", "kartu jawaban3")
+            }
         }
-        binding.kartujawaban4.setOnClickListener {
-            saveHereToCheckLater = randomAnswerWithoutTrueAnswer[3]
-            check()
-            Log.e("Main activity", "kartu jawaban4")
+        binding.jawaban4.apply {
+            text = listOfAnswer[3]
+            setOnClickListener {
+                check(text.toString())
+                Log.e("Main activity", "kartu jawaban4")
+            }
         }
-
     }
-    private fun check(){
-        if (saveHereToCheckLater == theAnswer){
+
+    // harus buat yang pertanyaan seterusnya selain di update. jadi update view nya manual, contoh variabel listofAnswer itu sebenernya berubah, cuma emg belum di update viewnua
+    // view nya harus di update juga dong hehe
+    private fun updateUI() {
+        val listOfAnswer = generateQuestion()
+
+        binding.soal.text = questionanswerList.entries.first { it.value == theAnswer }.key
+
+        binding.jawaban1.text = listOfAnswer[0]
+        binding.jawaban2.text = listOfAnswer[1]
+        binding.jawaban3.text = listOfAnswer[2]
+        binding.jawaban4.text = listOfAnswer[3]
+    }
+
+    private fun check(jawabanUser: String){
+        if (jawabanUser == theAnswer){
             Toast.makeText(this, "Jawaban kau bener", Toast.LENGTH_SHORT).show()
             Log.e("Main activity", "sampe sini")
             right++
             Log.e("MainAct","ini variabel right = {$right}")
             binding.bener.text = right.toString()
-            changeQuestion()
-        } else if (saveHereToCheckLater == null){
+            generateQuestion()
+        } else if (jawabanUser == null){
             Toast.makeText(this, "Silahkan jawab soal ini", Toast.LENGTH_SHORT).show()
         } else{
             Toast.makeText(this, "Salah jir", Toast.LENGTH_SHORT).show()
             wrong++
             Log.e("MainAct","ini variabel wrong = {$wrong}")
             binding.salah.text = wrong.toString()
-            changeQuestion()
+            generateQuestion()
         }
-
+        updateUI()
     }
-
 }
